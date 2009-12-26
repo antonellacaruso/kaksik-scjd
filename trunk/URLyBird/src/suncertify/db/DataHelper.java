@@ -233,6 +233,8 @@ public class DataHelper {
 		DataHelper dbHelper = new DataHelper(
 				"C:\\java\\workspace\\URLyBird\\db-1x3.db");
 
+		// I'm adding this row to test google SVN.
+
 		long cookie = 0;
 		// dbHelper.deleteHotelRoom(1, cookie);
 
