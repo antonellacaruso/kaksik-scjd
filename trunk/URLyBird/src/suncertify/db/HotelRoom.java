@@ -7,6 +7,8 @@ import java.util.logging.Logger;
  * 
  */
 public class HotelRoom {
+	private static final int FIELDS_COUNT = 7;
+
 	private String name;
 
 	private String location;
@@ -106,6 +108,10 @@ public class HotelRoom {
 		this.recordNo = recordNo;
 	}
 
+	public boolean hasOwner() {
+		return owner != null && owner.trim().length() > 0;
+	}
+
 	@Override
 	public String toString() {
 		String returnValue = "HotelRoom(" + name + ", " + location + ", "
@@ -115,23 +121,30 @@ public class HotelRoom {
 		return returnValue;
 	}
 
-	public void setField(String fieldName, byte[] value) {
-		try {
-			this.getClass().getDeclaredField(fieldName).set(this,
-					new String(value).trim());
-		} catch (IllegalArgumentException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SecurityException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (NoSuchFieldException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+	public static HotelRoom convertHotelRoomObject(String[] hotelRoomStringArray) {
+		if (hotelRoomStringArray == null
+				|| hotelRoomStringArray.length != FIELDS_COUNT) {
+			throw new IllegalArgumentException(
+					"Hotel room array length must be " + FIELDS_COUNT);
 		}
+
+		HotelRoom hotelRoom = new HotelRoom(hotelRoomStringArray[0],
+				hotelRoomStringArray[1], hotelRoomStringArray[2],
+				hotelRoomStringArray[3], hotelRoomStringArray[4],
+				hotelRoomStringArray[5], hotelRoomStringArray[6]);
+
+		return hotelRoom;
 	}
 
+	public String[] getStringArray() {
+		String[] hotelRoomStringArray = new String[FIELDS_COUNT];
+		hotelRoomStringArray[0] = getName();
+		hotelRoomStringArray[1] = getLocation();
+		hotelRoomStringArray[2] = getSize();
+		hotelRoomStringArray[3] = getSmoking();
+		hotelRoomStringArray[4] = getRate();
+		hotelRoomStringArray[5] = getDate();
+		hotelRoomStringArray[6] = getOwner();
+		return hotelRoomStringArray;
+	}
 }
