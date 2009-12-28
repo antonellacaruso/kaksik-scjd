@@ -1,7 +1,7 @@
 package suncertify.gui;
 
 import suncertify.db.Data;
-import suncertify.db.DuplicateKeyException;
+import suncertify.db.HotelRoom;
 import suncertify.db.RecordNotFoundException;
 import suncertify.db.URLyBirdDB;
 
@@ -10,25 +10,6 @@ public class GuiController {
 
 	public GuiController(String dbFilePath) {
 		database = new Data(dbFilePath);
-	}
-
-	public int create(String[] data) throws GuiControllerException {
-		try {
-			return database.create(data);
-		} catch (DuplicateKeyException e) {
-			throw new GuiControllerException(e);
-		}
-	}
-
-	public void delete(int recNo, long lockCookie)
-			throws GuiControllerException {
-		try {
-			database.delete(recNo, lockCookie);
-		} catch (SecurityException e) {
-			throw new GuiControllerException(e);
-		} catch (RecordNotFoundException e) {
-			throw new GuiControllerException(e);
-		}
 	}
 
 	public HotelRoomTableModel find(String searchString)
@@ -45,7 +26,7 @@ public class GuiController {
 		try {
 			for (int recordNumber : recordNumbers) {
 				String[] hotelRoom = database.read(recordNumber);
-				resultTableModel.addHotelRoomRecord(hotelRoom);
+				resultTableModel.addHotelRoomRecord(recordNumber, hotelRoom);
 			}
 		} catch (RecordNotFoundException e) {
 			throw new GuiControllerException(e);
@@ -54,24 +35,23 @@ public class GuiController {
 		return resultTableModel;
 	}
 
-	public long lock(int recNo) throws GuiControllerException {
+	public HotelRoom read(int recNo) throws GuiControllerException {
 		try {
-			return database.lock(recNo);
+			String[] hotelRoomStringArray = database.read(recNo);
+			return HotelRoom.convertHotelRoomObject(hotelRoomStringArray);
 		} catch (RecordNotFoundException e) {
 			throw new GuiControllerException(e);
 		}
 	}
 
-	public String[] read(int recNo) throws GuiControllerException {
+	public void book(int recNo, String ownerId) throws GuiControllerException {
 		try {
-			return database.read(recNo);
-		} catch (RecordNotFoundException e) {
-			throw new GuiControllerException(e);
-		}
-	}
-
-	public void unlock(int recNo, long cookie) throws GuiControllerException {
-		try {
+			long cookie = database.lock(recNo);
+			String[] hotelRoomStringArray = database.read(recNo);
+			HotelRoom hotelRoom = HotelRoom
+					.convertHotelRoomObject(hotelRoomStringArray);
+			hotelRoom.setOwner(ownerId);
+			database.update(recNo, hotelRoom.getStringArray(), cookie);
 			database.unlock(recNo, cookie);
 		} catch (SecurityException e) {
 			throw new GuiControllerException(e);
@@ -79,16 +59,4 @@ public class GuiController {
 			throw new GuiControllerException(e);
 		}
 	}
-
-	public void update(int recNo, String[] data, long lockCookie)
-			throws GuiControllerException {
-		try {
-			database.update(recNo, data, lockCookie);
-		} catch (SecurityException e) {
-			throw new GuiControllerException(e);
-		} catch (RecordNotFoundException e) {
-			throw new GuiControllerException(e);
-		}
-	}
-
 }

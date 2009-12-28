@@ -34,18 +34,18 @@ public class DataHelper {
 		initMetaData();
 	}
 
-	private List<String[]> getAllHotelRooms() throws IOException,
-			SecurityException, IllegalArgumentException, NoSuchFieldException,
-			IllegalAccessException {
-
-		List<String[]> result = new ArrayList<String[]>();
-
-		for (Long filePointer : filePointers.values()) {
-			result.add(getHotelRoomFromFile(filePointer));
-		}
-
-		return result;
-	}
+	// private List<String[]> getAllHotelRooms() throws IOException,
+	// SecurityException, IllegalArgumentException, NoSuchFieldException,
+	// IllegalAccessException {
+	//
+	// List<String[]> result = new ArrayList<String[]>();
+	//
+	// for (Long filePointer : filePointers.values()) {
+	// result.add(getHotelRoomFromFile(filePointer));
+	// }
+	//
+	// return result;
+	// }
 
 	public String[] getHotelRoom(int recordNo) throws IOException {
 		long filePointer = filePointers.get(recordNo);
@@ -230,25 +230,26 @@ public class DataHelper {
 			SecurityException, IllegalArgumentException, NoSuchFieldException,
 			IllegalAccessException, RecordNotFoundException {
 
-		DataHelper dbHelper = new DataHelper(
-				"C:\\java\\workspace\\URLyBird\\db-1x3.db");
-
-		// I'm adding this row to test google SVN.
-
-		long cookie = 0;
-		// dbHelper.deleteHotelRoom(1, cookie);
-
-		String[] newRecord = { "New Hotel 6", "Lendmarch", "6", "Y", "$170.00",
-				"2005/03/10", "" };
-		// dbHelper.saveHotelRoom(null, newRecord, cookie);
-
-		List<String[]> hotelRooms = dbHelper.getAllHotelRooms();
-
-		for (String[] hotelRoom : hotelRooms) {
-			for (String field : hotelRoom) {
-				System.out.print(field + ";");
-			}
-			System.out.println();
-		}
+		// DataHelper dbHelper = new DataHelper(
+		// "C:\\java\\workspace\\URLyBird\\db-1x3.db");
+		//
+		// // I'm adding this row to test google SVN.
+		//
+		// long cookie = 0;
+		// // dbHelper.deleteHotelRoom(1, cookie);
+		//
+		// String[] newRecord = { "New Hotel 6", "Lendmarch", "6", "Y",
+		// "$170.00",
+		// "2005/03/10", "" };
+		// // dbHelper.saveHotelRoom(null, newRecord, cookie);
+		//
+		// List<String[]> hotelRooms = dbHelper.getAllHotelRooms();
+		//
+		// for (String[] hotelRoom : hotelRooms) {
+		// for (String field : hotelRoom) {
+		// System.out.print(field + ";");
+		// }
+		// System.out.println();
+		// }
 	}
 }
