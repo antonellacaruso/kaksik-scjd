@@ -1,4 +1,4 @@
-package suncertify.db;
+package suncertify.db.exception;
 
 public class DuplicateKeyException extends Exception {
 

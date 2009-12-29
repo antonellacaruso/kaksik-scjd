@@ -2,8 +2,8 @@ package suncertify.gui;
 
 import suncertify.db.Data;
 import suncertify.db.HotelRoom;
-import suncertify.db.RecordNotFoundException;
 import suncertify.db.URLyBirdDB;
+import suncertify.db.exception.RecordNotFoundException;
 
 public class GuiController {
 	URLyBirdDB database = null;
@@ -45,18 +45,32 @@ public class GuiController {
 	}
 
 	public void book(int recNo, String ownerId) throws GuiControllerException {
+		Long cookie = null;
 		try {
-			long cookie = database.lock(recNo);
+			cookie = database.lock(recNo);
 			String[] hotelRoomStringArray = database.read(recNo);
 			HotelRoom hotelRoom = HotelRoom
 					.convertHotelRoomObject(hotelRoomStringArray);
 			hotelRoom.setOwner(ownerId);
 			database.update(recNo, hotelRoom.getStringArray(), cookie);
-			database.unlock(recNo, cookie);
 		} catch (SecurityException e) {
 			throw new GuiControllerException(e);
 		} catch (RecordNotFoundException e) {
 			throw new GuiControllerException(e);
+		} finally {
+			// If cookie exists then record was successfully locked. Therefore
+			// record must be unlocked.
+			if (cookie != null) {
+				try {
+					database.unlock(recNo, cookie);
+				} catch (SecurityException e) {
+					// TODO Log exception. No need to re-throw.
+					e.printStackTrace();
+				} catch (RecordNotFoundException e) {
+					// TODO Log exception. No need to re-throw.
+					e.printStackTrace();
+				}
+			}
 		}
 	}
 }

@@ -2,6 +2,10 @@ package suncertify.db;
 
 import java.io.IOException;
 
+import suncertify.db.exception.DataPersistException;
+import suncertify.db.exception.DuplicateKeyException;
+import suncertify.db.exception.RecordNotFoundException;
+
 public class Data implements URLyBirdDB {
 
 	DataHelper dataHelper = null;
@@ -19,18 +23,20 @@ public class Data implements URLyBirdDB {
 		try {
 			return dataHelper.saveHotelRoom(null, data);
 		} catch (RecordNotFoundException e) {
-			// Will never happen.
+			// This should never happen.
+			throw new DataPersistException("Could not save data.", e);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new DataPersistException("Could not save data.", e);
 		}
-
-		return 0;
 	}
 
 	public void delete(int recNo, long lockCookie)
 			throws RecordNotFoundException, SecurityException {
 		try {
+			// Throws RecordNotFoundException or SecurityException if record
+			// cannot be updated.
+			HotelRoomLocker.ensureLock(recNo, lockCookie);
+
 			dataHelper.deleteHotelRoom(recNo, lockCookie);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -43,8 +49,9 @@ public class Data implements URLyBirdDB {
 	}
 
 	public long lock(int recNo) throws RecordNotFoundException {
-		// TODO Auto-generated method stub
-		return 0;
+		// TODO: Currently ignoring RecordNotFoundException. Comment this
+		// behavior.
+		return HotelRoomLocker.lockHotelRoom(recNo);
 	}
 
 	public String[] read(int recNo) throws RecordNotFoundException {
@@ -58,17 +65,26 @@ public class Data implements URLyBirdDB {
 
 	public void unlock(int recNo, long cookie) throws RecordNotFoundException,
 			SecurityException {
-		// TODO Auto-generated method stub
 
+		// If given record is not locked, then RecordNotFoundException is
+		// thrown. If cookie is invalid, SecurityException is thrown.
+		HotelRoomLocker.unlockHotelRoom(recNo, cookie);
 	}
 
 	public void update(int recNo, String[] data, long lockCookie)
 			throws RecordNotFoundException, SecurityException {
 		try {
+
+			// Throws RecordNotFoundException or SecurityException if record
+			// cannot be updated.
+			HotelRoomLocker.ensureLock(recNo, lockCookie);
+
 			dataHelper.saveHotelRoom(recNo, data);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			throw new RecordNotFoundException();
+			throw new RecordNotFoundException(
+					"Record could not be read. Record does probably not exist.",
+					e);
 		}
 	}
 

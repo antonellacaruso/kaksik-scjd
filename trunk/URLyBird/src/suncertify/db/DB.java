@@ -1,5 +1,8 @@
 package suncertify.db;
 
+import suncertify.db.exception.DuplicateKeyException;
+import suncertify.db.exception.RecordNotFoundException;
+
 public interface DB {
 	// Reads a record from the file. Returns an array where each
 	// element is a record value.

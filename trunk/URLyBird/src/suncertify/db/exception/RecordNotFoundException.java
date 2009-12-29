@@ -1,4 +1,4 @@
-package suncertify.db;
+package suncertify.db.exception;
 
 public class RecordNotFoundException extends Exception {
 	private static final long serialVersionUID = 1L;
@@ -9,6 +9,10 @@ public class RecordNotFoundException extends Exception {
 
 	public RecordNotFoundException(String message) {
 		super(message);
+	}
+
+	public RecordNotFoundException(String message, Throwable cause) {
+		super(message, cause);
 	}
 
 }
