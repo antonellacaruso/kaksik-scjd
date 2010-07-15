@@ -32,8 +32,8 @@ public class MainWindow extends JFrame {
 		super("Hotels");
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 
-		guiController = new GuiController(
-				"C:\\java\\workspace\\URLyBird\\db-1x3.db");
+//		guiController = new GuiController("C:\\Users\\Raido\\java\\workspace\\URLyBird\\db-1x3.db");
+		guiController = new GuiController("rmi://localhost:11111/URLyBirdDBFactory");
 
 		mainTable.getSelectionModel().addListSelectionListener(
 				new SelectionListener());
