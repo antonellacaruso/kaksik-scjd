@@ -1,5 +1,6 @@
 package suncertify.gui;
 
+import suncertify.db.URLyBirdDBFactory;
 import suncertify.db.Data;
 import suncertify.db.HotelRoom;
 import suncertify.db.URLyBirdDB;
@@ -8,8 +9,8 @@ import suncertify.db.exception.RecordNotFoundException;
 public class GuiController {
 	URLyBirdDB database = null;
 
-	public GuiController(String dbFilePath) {
-		database = new Data(dbFilePath);
+	public GuiController(String dbUri) {
+		database = URLyBirdDBFactory.getURLyBirdDB(dbUri);
 	}
 
 	public HotelRoomTableModel find(String searchString)
